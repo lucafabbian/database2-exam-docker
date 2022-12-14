@@ -3,8 +3,7 @@
 To start, run:
 
 ```bash
-clone 
-https://github.com/lucafabbian/database2-exam-docker.git
+clone https://github.com/lucafabbian/database2-exam-docker.git
 cd database2-exam-docker
 
 # start everything
