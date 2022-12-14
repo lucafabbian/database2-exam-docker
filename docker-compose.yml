@@ -1,0 +1,60 @@
+version: "3"
+
+services:
+  graphdb:
+    container_name: graphdb-db2
+    image: ontotext/graphdb:10.0.0
+    entrypoint:  ["/bin/bash", "-c", "/opt/graphdb/dist/bin/graphdb"]
+    environment: 
+      GDB_JAVA_OPTS: >-
+        -Xmx2g -Xms2g
+        -Dgraphdb.home=/opt/graphdb/home
+        -Dgraphdb.workbench.importDirectory=/opt/graphdb/home/graphdb-import
+        -Dgraphdb.workbench.cors.enable=true
+        -Denable-context-index=true
+        -Dentity-pool-implementation=transactional
+        -Dhealth.max.query.time.seconds=60
+        -Dgraphdb.append.request.id.headers=true
+        -Dreuse.vars.in.subselects=true
+    volumes:
+      - ./shared:/shared
+    ports:
+      - 7211:7200
+
+
+  neo4j:
+    container_name: neo4j-db2
+    image: neo4j:5.2
+    environment: 
+      NEO4J_AUTH: neo4j/s3cr3t
+    volumes:
+      - ./shared:/shared
+    ports:
+      - 7475:7474
+      - 7688:7687
+
+  proetege:
+    container_name: protege-db2
+    image: openkbs/protege-docker-x11:latest
+    environment:
+      - DISPLAY=novnc:0.0
+    depends_on:
+      - novnc
+    networks:
+      - x11
+    volumes:
+      - ./shared:/home/developer/shared
+  novnc:
+    image: theasp/novnc:latest
+    environment:
+      # Adjust to your screen size
+      - DISPLAY_WIDTH=1400
+      - DISPLAY_HEIGHT=768
+      - RUN_XTERM=no
+    ports:
+      - "9080:8080"
+    networks:
+      - x11
+networks:
+  x11:
+
